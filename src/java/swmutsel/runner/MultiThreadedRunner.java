@@ -48,6 +48,7 @@ public class MultiThreadedRunner extends Runner {
     final Map<Integer, List<LikelihoodCalculator>> mixtureCalculators = Maps.newConcurrentMap();
 
 
+    // CM looks like this is for homog model only, so no need to change anything
     @Override
     public Map<Integer, Double> getLogLikelihood(final SubstitutionModel model, final boolean save) {
         totalevals++;
@@ -130,7 +131,8 @@ public class MultiThreadedRunner extends Runner {
 
         return siteLogLikelihood;
     }
-
+    
+    // CM looks like this is for homog model only, so no need to change anything
     @Override
     public Map<Integer, Double> getLogLikelihood(final Tree tree, final SwMut mutation, final FitnessStore fitnesses, final Penalty penalty, final boolean saveCalculators) {
         List<Future<Triple<Integer, Double, LikelihoodCalculator>>> futures = Lists.newArrayList();
@@ -295,9 +297,9 @@ public class MultiThreadedRunner extends Runner {
                     List<Pair<Double, ArrayList<Fitness>>> optimals = Lists.newArrayList();
 
                     for (int run = 0; run < numberOfOptimRestarts; run++) {
-                        ArrayList<Fitness> siteFitness = Lists.newArrayList();
+                        ArrayList<Fitness> siteFitness = Lists.newArrayList(); // size == cladeModel.size()
                         LinkedHashMap<String, SubstitutionModel> models = Maps.newLinkedHashMap();
-
+                        
                         for (String clade : cladeModel) {
                             Fitness f = fitnesses.get(site.getKey()).copy();
 
@@ -321,11 +323,8 @@ public class MultiThreadedRunner extends Runner {
                         if (penalty == null) {
                             calculator = new LikelihoodCalculator(tree, states, models);
                         } else {
-                            if (cladeModel.size() == 1) {
-                                calculator = new PenalisedLikelihoodCalculator(tree, site.getValue(), models, penalty, siteFitness.get(0));
-                            } else {
-                                throw new RuntimeException("MultiThreadedRunner.optimiseFitness - Penalised likelihood not implemented for non-homogeneous models");
-                            }
+                            calculator = new PenalisedLikelihoodCalculator(tree, site.getValue(), models, penalty, siteFitness); // CM TODO pass in siteFitness itself instead of a single element of it
+                            
                         }
 
                         calculator.getStorage();
