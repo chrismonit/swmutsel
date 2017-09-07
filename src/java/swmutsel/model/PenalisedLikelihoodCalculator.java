@@ -23,7 +23,7 @@ import java.util.Set;
  * Date: 7 Sep 2017 17:18:42 BST
  */
 public class PenalisedLikelihoodCalculator extends LikelihoodCalculator {
-    private final List<? extends Parameter> penalisedParameters; // CM TODO make into a list of parameter instances
+    private final List<? extends Parameter> penalisedParameters;
     private final Penalty penalty;
 
     // Applying same penalty to all sets of fitnesses
