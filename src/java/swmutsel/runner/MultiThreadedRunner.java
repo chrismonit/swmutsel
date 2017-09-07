@@ -297,7 +297,7 @@ public class MultiThreadedRunner extends Runner {
                     List<Pair<Double, ArrayList<Fitness>>> optimals = Lists.newArrayList();
 
                     for (int run = 0; run < numberOfOptimRestarts; run++) {
-                        ArrayList<Fitness> siteFitness = Lists.newArrayList(); // size == cladeModel.size()
+                        ArrayList<Fitness> siteFitness = Lists.newArrayList(); // siteFitness.size() == cladeModel.size()
                         LinkedHashMap<String, SubstitutionModel> models = Maps.newLinkedHashMap();
                         
                         for (String clade : cladeModel) {
@@ -323,8 +323,7 @@ public class MultiThreadedRunner extends Runner {
                         if (penalty == null) {
                             calculator = new LikelihoodCalculator(tree, states, models);
                         } else {
-                            calculator = new PenalisedLikelihoodCalculator(tree, site.getValue(), models, penalty, siteFitness); // CM TODO pass in siteFitness itself instead of a single element of it
-                            
+                            calculator = new PenalisedLikelihoodCalculator(tree, site.getValue(), models, penalty, siteFitness);
                         }
 
                         calculator.getStorage();

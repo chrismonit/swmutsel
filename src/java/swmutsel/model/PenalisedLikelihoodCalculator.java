@@ -15,17 +15,18 @@ import java.util.Set;
 /**
  * Wraps LikelihoodCalculator and adds penalty on Fitness parameters to log-likelihood.
  *
- * TODO: possibly have a list of penalties and penalised parameters...?
  *
  * Author: Asif Tamuri (tamuri@ebi.ac.uk)
  * Date: 18/10/2013 21:22
+ * 
+ * Modified: Christopher Monit (c.monit.12@ucl.ac.uk)
+ * Date: 7 Sep 2017 17:18:42 BST
  */
 public class PenalisedLikelihoodCalculator extends LikelihoodCalculator {
     private final List<? extends Parameter> penalisedParameters; // CM TODO make into a list of parameter instances
     private final Penalty penalty;
 
-    //CM TODO can change so that you provide a list of Parameter instances
-    // assume same penalty can be applied to all
+    // Applying same penalty to all sets of fitnesses
     public PenalisedLikelihoodCalculator(Tree tree, Map<String, Byte> siteStates, LinkedHashMap<String, SubstitutionModel> models, Penalty penalty, List<? extends Parameter> penalisedParameters) {
         super(tree, siteStates, models);
         this.penalisedParameters = penalisedParameters;
@@ -33,12 +34,10 @@ public class PenalisedLikelihoodCalculator extends LikelihoodCalculator {
     }
 
 
-    // CM originally this was the most general constructor
     public PenalisedLikelihoodCalculator(Tree tree, Map<String, Byte> siteStates, LinkedHashMap<String, SubstitutionModel> models, Penalty penalty, Parameter penalisedParameter) {
         this(tree, siteStates, models, penalty, Arrays.asList(penalisedParameter));
     }
     
-    // CM used in one of the MultiThreadedRunner.getLogLikelihood methods
     @SuppressWarnings("unchecked")
     public PenalisedLikelihoodCalculator(Tree tree, Map<String, Byte> siteStates, SubstitutionModel model, Penalty penalty, Parameter penalisedParameter) {
         this(tree, siteStates, CoreUtils.getLinkedHashMap(Pair.of("ALL", model)), penalty, penalisedParameter);
@@ -61,8 +60,7 @@ public class PenalisedLikelihoodCalculator extends LikelihoodCalculator {
         return out;
     }
     
-    // CM TODO iterate over parameter list and compute penalty for each parameter
-    // return the sum of these
+    // NB the penalty.calculate returns logged value
     private double calculatePenalty() {
         double penalty = 0.0;
         for (Parameter param : this.penalisedParameters){
